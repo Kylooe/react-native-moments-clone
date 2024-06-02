@@ -20,7 +20,8 @@ export default function() {
       </Pressable>
       {isOpen && (
         <View style={styles.actions}>
-
+          <Icon.Button name="heart" size={18} color="#fff" backgroundColor="#4c4c4c" style={styles.btn}>赞</Icon.Button>
+          <Icon.Button name="message-square" size={18} color="#fff" backgroundColor="#4c4c4c" style={styles.btn}>评论</Icon.Button>
         </View>
       )}
     </View>
@@ -34,8 +35,15 @@ const styles = StyleSheet.create({
     borderRadius: 3,
   },
   actions: {
-    padding: 5,
-    backgroundColor: '#333',
-    borderRadius: 2,
+    position: 'absolute',
+    right: 35,
+    top: -8,
+    flexDirection: 'row',
+    backgroundColor: '#4c4c4c',
+    borderRadius: 5,
+  },
+  btn: {
+    width: 80,
+    justifyContent: 'center',
   }
 });

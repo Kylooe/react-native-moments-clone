@@ -1,14 +1,18 @@
-import { FlatList, Image, Text, View, StyleSheet } from 'react-native';
+import { Image, Text, View, StyleSheet } from 'react-native';
+import { formatDistanceToNowStrict } from 'date-fns';
 
-import Action from '@/components/MomementAction';
+import Action from '@/components/MomentAction';
+import Gallery from '@/components/MomentGallery';
 
 import type { Moment } from '@/typings/Moment';
+
+import { AVATAR_SIZE } from '@/constants/Moments';
 
 export default function({
   user,
   content,
   photos = [],
-  time,
+  createdAt,
 }: Moment) {
   return (
     <View style={styles.container}>
@@ -18,20 +22,9 @@ export default function({
           <Text style={styles.name}>{user.name}</Text>
           {content && (<Text>{content}</Text>)}
         </View>
-        {photos.length === 1 ? (
-          <Image source={{ uri: photos[0].thumbnail }} style={styles.photo} />
-        ) : (
-          <View style={styles.photos}>
-            <FlatList
-              data={photos}
-              renderItem={({ item }) => (
-                <Image source={{ uri: item.thumbnail }} style={styles.thumbnail} />
-              )}
-            />
-          </View>
-        )}
+        <Gallery photos={photos} />
         <View style={styles.commentWrapper}>
-          <Text style={styles.time}>{time}</Text>
+          <Text style={styles.time}>{formatDistanceToNowStrict(createdAt)} ago</Text>
           <Action />
         </View>
       </View>
@@ -51,8 +44,8 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
   },
   avatar: {
-    width: 40,
-    height: 40,
+    width: AVATAR_SIZE,
+    height: AVATAR_SIZE,
     borderRadius: 5,
   },
   contentWrapper: {
@@ -63,20 +56,6 @@ const styles = StyleSheet.create({
     color: '#0a7ea4',
     fontWeight: 'bold',
   },
-  photo: {
-    width: '66%',
-    height: 180,
-  },
-  photos: {
-    flex:1,
-    flexWrap: 'wrap',
-    alignItems: 'stretch',
-    gap: 5,
-  },
-  thumbnail: {
-    flex: 1,
-    // minWidth: ,
-  },
   commentWrapper: {
     flex: 1,
     flexDirection: 'row',
@@ -85,6 +64,6 @@ const styles = StyleSheet.create({
   },
   time: {
     fontSize: 12,
-    color: '#ccc',
+    color: '#9e9e9e',
   },
 });

@@ -1,4 +1,7 @@
 import type { Moment } from "@/typings/Moment"
+import { formatISO, sub } from "date-fns";
+
+export const AVATAR_SIZE = 40;
 
 const randomPhotos = [
   'https://randompicturegenerator.com/img/cat-generator/g8c05547620a4cada5c84f16d2d937b4943936cb13dc0a477c415ed5a25b5ff4bd89bebaa39e463cd9ea2c2a1dd74a201_640.jpg',
@@ -19,7 +22,7 @@ export const list: Moment[] = new Array(10).fill(null).map((_, i) => (
       id: `img-${i}`,
       thumbnail: randomPhotos[Math.floor(Math.random() * randomPhotos.length)],
       src: '',
-    })).slice(0, 1 /*Math.random() * 10 */),
-    time: `2016-05-02T00:00:00`,
+    })).slice(0, Math.random() * 10),
+    createdAt: formatISO(sub(new Date(), { days: i > 7 ? 1 : 0, hours: i, minutes: i + 1 })),
   }
-))
+));

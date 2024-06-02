@@ -10,5 +10,5 @@ export type Moment = {
     thumbnail: string;
     src: string;
   }[];
-  time: string;
+  createdAt: string;
 };
