@@ -26,8 +26,8 @@ export default function({ photos }: { photos: Moment['photos'] }) {
     }
   }, [photos]);
 
-  if (!photos) return null;
-  return photos?.length === 1 ? (
+  if (!photos?.length) return;
+  return photos.length === 1 ? (
     <Image
       source={{ uri: photos[0].thumbnail }}
       style={[
@@ -51,6 +51,7 @@ export default function({ photos }: { photos: Moment['photos'] }) {
           <Image source={{ uri: item.thumbnail }} style={{ width: size, height: size }} />
         )}
         columnWrapperStyle={{ gap: GAP, marginBottom: GAP }}
+        style={{ marginBottom: -GAP }}
       />
     </View>
   )

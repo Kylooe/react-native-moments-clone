@@ -1,4 +1,4 @@
-import { Image, Text, View, StyleSheet } from 'react-native';
+import { Image, Text, View, StyleSheet, useColorScheme } from 'react-native';
 import { formatDistanceToNowStrict } from 'date-fns';
 
 import Action from '@/components/MomentAction';
@@ -8,20 +8,23 @@ import type { Moment } from '@/typings/Moment';
 
 import { AVATAR_SIZE } from '@/constants/Moments';
 
+const TEXT_COLOR = { light: '#000', dark: '#fff' };
+
 export default function({
   user,
   content,
   photos = [],
   createdAt,
 }: Moment) {
+  const colorScheme = useColorScheme() ?? 'light';
   return (
     <View style={styles.container}>
       <Image source={{ uri: user.avatar }} style={styles.avatar} />
       <View style={styles.contentWrapper}>
-        <View>
+        <Text>
           <Text style={styles.name}>{user.name}</Text>
-          {content && (<Text>{content}</Text>)}
-        </View>
+          {content && (<Text style={{ color: TEXT_COLOR[colorScheme] }}>{'\n'}{content}</Text>)}
+        </Text>
         <Gallery photos={photos} />
         <View style={styles.commentWrapper}>
           <Text style={styles.time}>{formatDistanceToNowStrict(createdAt)} ago</Text>
