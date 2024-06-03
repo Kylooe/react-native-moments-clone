@@ -1,6 +1,6 @@
-# Welcome to your Expo app 👋
+# Simple Moments Clone
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+This is a WeChat Moments clone created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
 
 ## Get started
 
@@ -16,35 +16,24 @@ This is an [Expo](https://expo.dev) project created with [`create-expo-app`](htt
     npx expo start
    ```
 
-In the output, you'll find options to open the app in a
+## How can I see the app then?
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
+### With Expo Go
 
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
+1. Access https://expo.dev/go and install Expo Go on your device
 
-## Get a fresh project
+2. Scan the QR code in terminal with Expo Go app
 
-When you're ready, run:
+3. Waiting for building!
 
-```bash
-npm run reset-project
-```
+### On Web
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+You can experience app-like UI in the browser, access http://localhost:8081 or press key `w` to open web app.
 
-## Learn more
+### With Android Studio emulator
 
-To learn more about developing your project with Expo, look at the following resources:
+If you've installed Android Studio on your computer, just follow [this guide](https://docs.expo.dev/workflow/android-studio-emulator/)!
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
+### With iOS simulator (macOS only)
 
-## Join the community
-
-Join our community of developers creating universal apps.
-
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+If you've installed Xcode, check [this guide](https://docs.expo.dev/workflow/ios-simulator/).
