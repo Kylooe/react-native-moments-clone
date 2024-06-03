@@ -3,13 +3,15 @@ import { Pressable, View, StyleSheet } from 'react-native';
 
 import Icon from '@expo/vector-icons/Feather';
 
+import { useThemeColor } from '@/hooks/useThemeColor';
+
 export default function() {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
     <View>
       <Pressable
-        style={styles.trigger}
+        style={[styles.trigger, { backgroundColor: useThemeColor({}, 'divider')}]}
         onPress={() => setIsOpen((value) => !value)}
       >
         <Icon
@@ -31,7 +33,6 @@ export default function() {
 const styles = StyleSheet.create({
   trigger: {
     paddingHorizontal: 5,
-    backgroundColor: '#efefef',
     borderRadius: 3,
   },
   actions: {

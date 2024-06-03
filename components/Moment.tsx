@@ -1,14 +1,11 @@
-import { Image, Text, View, StyleSheet, useColorScheme } from 'react-native';
+import { Image, Text, View, StyleSheet } from 'react-native';
 import { formatDistanceToNowStrict } from 'date-fns';
 
 import Action from '@/components/MomentAction';
 import Gallery from '@/components/MomentGallery';
-
+import { useThemeColor } from '@/hooks/useThemeColor';
 import type { Moment } from '@/typings/Moment';
-
 import { AVATAR_SIZE } from '@/constants/Moments';
-
-const TEXT_COLOR = { light: '#000', dark: '#fff' };
 
 export default function({
   user,
@@ -17,14 +14,13 @@ export default function({
   createdAt,
   onImagePress,
 }: Moment & { onImagePress: (i: number) => void }) {
-  const colorScheme = useColorScheme() ?? 'light';
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { borderBottomColor: useThemeColor({}, 'divider') }]}>
       <Image source={{ uri: user.avatar }} style={styles.avatar} />
       <View style={styles.contentWrapper}>
         <Text>
           <Text style={styles.name}>{user.name}</Text>
-          {content && (<Text style={{ color: TEXT_COLOR[colorScheme] }}>{'\n'}{content}</Text>)}
+          {content && (<Text style={{ color: useThemeColor({}, 'text') }}>{'\n'}{content}</Text>)}
         </Text>
         <Gallery photos={photos} onImagePress={onImagePress} />
         <View style={styles.commentWrapper}>

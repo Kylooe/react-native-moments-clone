@@ -7,6 +7,7 @@ import Animated, {
   useScrollViewOffset,
 } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { router } from 'expo-router';
 import { setStatusBarHidden } from 'expo-status-bar';
 import Icon from '@expo/vector-icons/FontAwesome6';
 
@@ -17,7 +18,6 @@ import MediaViewer from '@/components/MediaViewer';
 import type { Moment } from '@/typings/Moment';
 
 import { list as data } from '@/constants/Moments';
-
 
 const BANNER_HEIGHT = 270;
 const AVATAR_HEIGHT = 70;
@@ -64,7 +64,7 @@ export default function Moments() {
         <Animated.Text style={[styles.btn, animatedIconStyle]} onPress={() => router.back()}>
           <Icon name="chevron-left" size={20} />
         </Animated.Text>
-        <Animated.Text style={[styles.btn, animatedIconStyle]}>
+        <Animated.Text style={[styles.btn, colorScheme === 'light' ? animatedIconStyle : { color: '#fff' }]}>
           <Icon name="camera" size={20} />
         </Animated.Text>
       </Animated.View>
