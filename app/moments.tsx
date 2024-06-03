@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Image, Text, View, StyleSheet, useColorScheme } from 'react-native';
+import { FlatList, Image, Text, View, StyleSheet, useColorScheme } from 'react-native';
 import Animated, {
   interpolate,
   useAnimatedProps,
@@ -7,49 +7,73 @@ import Animated, {
   useAnimatedStyle,
   useDerivedValue,
   useScrollViewOffset,
+  useAnimatedScrollHandler,
 } from 'react-native-reanimated';
-import { StatusBar } from 'expo-status-bar';
+import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
+import type { NativeStackNavigationOptions } from 'react-native-screens/lib/typescript/native-stack/types';
+import { useNavigation } from '@react-navigation/native';
+import { StackRouter } from '@react-navigation/native';
+import { router, Stack } from 'expo-router';
+import { StatusBar, setStatusBarStyle } from 'expo-status-bar';
+import type { StatusBarProps } from 'expo-status-bar';
 import Icon from '@expo/vector-icons/FontAwesome6';
 
 import { ThemedView } from '@/components/ThemedView';
+import Moment from '@/components/Moment';
+
+import { list as data } from '@/constants/Moments';
 
 const BANNER_HEIGHT = 270;
 const AVATAR_HEIGHT = 70;
 const AVATAR_OFFSET = 20;
 const HEADER_HEIGHT = 48;
-const HEADER_BG = { light: '190, 190, 190', dark: '90, 90, 90' };
+const HEADER_BG = { light: '#ededed', dark: '#000' };
 
 const bannerImage = require('@/assets/images/partial-react-logo.png');
 const avatar = require('@/assets/images/react-logo.png');
 
 export default function Moments() {
   const colorScheme = useColorScheme() ?? 'light';
+  
+  const { top: STATUSBAR_HEIGHT } = useSafeAreaInsets();
+  const SCROLL_THRESHOLD = React.useMemo(() => BANNER_HEIGHT - HEADER_HEIGHT - STATUSBAR_HEIGHT, [STATUSBAR_HEIGHT]);
   const scrollRef = useAnimatedRef<Animated.ScrollView>();
   const scrollOffset = useScrollViewOffset(scrollRef);
 
-  const animatedStyle = useAnimatedStyle(() => {
-    const bgOpacity = scrollOffset.value > BANNER_HEIGHT - HEADER_HEIGHT ? 1 : 0;
-    const iconOpacity = interpolate(scrollOffset.value, [BANNER_HEIGHT + AVATAR_OFFSET - AVATAR_HEIGHT - HEADER_HEIGHT, BANNER_HEIGHT - HEADER_HEIGHT, BANNER_HEIGHT + AVATAR_OFFSET - HEADER_HEIGHT], [1, 0, 1], 'clamp');
+  // React.useEffect(() => {
+  //   setStatusBarStyle(scrollOffset.value > SCROLL_THRESHOLD ? 'dark' : 'light');
+  // }, [scrollOffset.value, SCROLL_THRESHOLD]);
+
+  const animatedHeaderStyle = useAnimatedStyle(() => {
+    const bgColor = scrollOffset.value > SCROLL_THRESHOLD ? HEADER_BG[colorScheme] : 'transparent';
+    const iconOpacity = interpolate(
+      scrollOffset.value,
+      [BANNER_HEIGHT + AVATAR_OFFSET - AVATAR_HEIGHT - HEADER_HEIGHT - STATUSBAR_HEIGHT, SCROLL_THRESHOLD, BANNER_HEIGHT + AVATAR_OFFSET - HEADER_HEIGHT - STATUSBAR_HEIGHT],
+      [1, 0, 1],
+      'clamp'
+    );
     return {
-      backgroundColor: `rgba(${HEADER_BG[colorScheme]}, ${bgOpacity})`,
+      backgroundColor: bgColor,
       opacity: iconOpacity,
     };
   });
 
-  const iconColor = useDerivedValue(() => scrollOffset.value > BANNER_HEIGHT ? '#000' : '#fff');
-  const HeaderIcon = Animated.createAnimatedComponent(React.forwardRef(({ name }: { name: string }, ref: React.LegacyRef<View>) => (
-    <Icon.Button ref={ref} name={name} size={20} color={iconColor.value} backgroundColor="rgba(0,0,0,0)" iconStyle={{ margin: 10 }} />
-  )));
-
-  const statusTheme = useDerivedValue(() => scrollOffset.value > BANNER_HEIGHT ? 'dark' : 'light');
+  const animatedIconStyle = useAnimatedStyle(() => {
+    const color = scrollOffset.value > SCROLL_THRESHOLD ? '#000' : '#fff';
+    return { color };
+  });
 
   return (
-    <View style={styles.container}>
-      <StatusBar style={statusTheme.value} />
-      <Animated.View style={[styles.header, animatedStyle]}>
-        <HeaderIcon name="chevron-left" />
-        <HeaderIcon name="camera" />
+    <ThemedView style={styles.container}>
+      <Animated.View style={[styles.header, animatedHeaderStyle, { paddingTop: STATUSBAR_HEIGHT }]}>
+        <Animated.Text style={[styles.btn, animatedIconStyle]} onPress={() => router.back()}>
+          <Icon name="chevron-left" size={20} />
+        </Animated.Text>
+        <Animated.Text style={[styles.btn, animatedIconStyle]}>
+          <Icon name="camera" size={20} />
+        </Animated.Text>
       </Animated.View>
+
       <Animated.ScrollView ref={scrollRef} scrollEventThrottle={16}>
         <View style={styles.profile}>
           <ThemedView>
@@ -61,11 +85,14 @@ export default function Moments() {
           </View>
         </View>
 
-        <View>
-          <Text style={{ height: 1000 }}>lalalalalalala</Text>
-        </View>
+        <FlatList
+          data={data}
+          renderItem={({ item }) => (
+            <Moment user={item.user} content={item.content} photos={item.photos} createdAt={item.createdAt}  />
+          )}
+        />
       </Animated.ScrollView>
-    </View>
+    </ThemedView>
   )
 }
 
@@ -75,7 +102,6 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
   },
   header: {
-    height: HEADER_HEIGHT,
     position: 'absolute',
     top: 0,
     width: '100%',
@@ -84,6 +110,11 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     zIndex: 1,
+  },
+  btn: {
+    width: HEADER_HEIGHT,
+    lineHeight: HEADER_HEIGHT,
+    textAlign: 'center',
   },
   banner: {
     height: BANNER_HEIGHT,
@@ -109,7 +140,6 @@ const styles = StyleSheet.create({
     paddingBottom: 10,
     color: '#fff',
     fontSize: 18,
-    // fontWeight: 500,
   },
   avatar: {
     position: 'relative',
@@ -117,7 +147,6 @@ const styles = StyleSheet.create({
     width: AVATAR_HEIGHT,
     height: AVATAR_HEIGHT,
     borderRadius: 10,
-
     backgroundColor: '#000',
   }
 });
