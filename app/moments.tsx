@@ -1,27 +1,23 @@
 import * as React from 'react';
-import { FlatList, Image, Text, View, StyleSheet, useColorScheme } from 'react-native';
+import { FlatList, Image, Text, View, StyleSheet, useColorScheme, Platform } from 'react-native';
 import Animated, {
   interpolate,
-  useAnimatedProps,
   useAnimatedRef,
   useAnimatedStyle,
-  useDerivedValue,
   useScrollViewOffset,
-  useAnimatedScrollHandler,
 } from 'react-native-reanimated';
-import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
-import type { NativeStackNavigationOptions } from 'react-native-screens/lib/typescript/native-stack/types';
-import { useNavigation } from '@react-navigation/native';
-import { StackRouter } from '@react-navigation/native';
-import { router, Stack } from 'expo-router';
-import { StatusBar, setStatusBarStyle } from 'expo-status-bar';
-import type { StatusBarProps } from 'expo-status-bar';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { setStatusBarHidden } from 'expo-status-bar';
 import Icon from '@expo/vector-icons/FontAwesome6';
 
 import { ThemedView } from '@/components/ThemedView';
-import Moment from '@/components/Moment';
+import { default as MomentItem } from '@/components/Moment';
+import MediaViewer from '@/components/MediaViewer';
+
+import type { Moment } from '@/typings/Moment';
 
 import { list as data } from '@/constants/Moments';
+
 
 const BANNER_HEIGHT = 270;
 const AVATAR_HEIGHT = 70;
@@ -40,10 +36,6 @@ export default function Moments() {
   const scrollRef = useAnimatedRef<Animated.ScrollView>();
   const scrollOffset = useScrollViewOffset(scrollRef);
 
-  // React.useEffect(() => {
-  //   setStatusBarStyle(scrollOffset.value > SCROLL_THRESHOLD ? 'dark' : 'light');
-  // }, [scrollOffset.value, SCROLL_THRESHOLD]);
-
   const animatedHeaderStyle = useAnimatedStyle(() => {
     const bgColor = scrollOffset.value > SCROLL_THRESHOLD ? HEADER_BG[colorScheme] : 'transparent';
     const iconOpacity = interpolate(
@@ -57,11 +49,14 @@ export default function Moments() {
       opacity: iconOpacity,
     };
   });
-
   const animatedIconStyle = useAnimatedStyle(() => {
     const color = scrollOffset.value > SCROLL_THRESHOLD ? '#000' : '#fff';
     return { color };
   });
+
+  const [photosFullScreen, setPhotosFullScreen] = React.useState<Moment['photos']>([]);
+  const [targetPhotoIndex, setTargetPhotoIndex] = React.useState(-1);
+  const [isMediaActive, setIsMediaActive] = React.useState(false);
 
   return (
     <ThemedView style={styles.container}>
@@ -74,7 +69,7 @@ export default function Moments() {
         </Animated.Text>
       </Animated.View>
 
-      <Animated.ScrollView ref={scrollRef} scrollEventThrottle={16}>
+      <Animated.ScrollView ref={scrollRef} scrollEventThrottle={16} style={{ height: '100%', overflow: 'scroll' }}>
         <View style={styles.profile}>
           <ThemedView>
             <Image source={bannerImage} style={styles.banner} />
@@ -88,10 +83,31 @@ export default function Moments() {
         <FlatList
           data={data}
           renderItem={({ item }) => (
-            <Moment user={item.user} content={item.content} photos={item.photos} createdAt={item.createdAt}  />
+            <MomentItem
+              user={item.user}
+              content={item.content}
+              photos={item.photos}
+              createdAt={item.createdAt}
+              onImagePress={(i) => {
+                setPhotosFullScreen(item.photos);
+                setTargetPhotoIndex(i);
+                setStatusBarHidden(true);
+                setIsMediaActive(true);
+              }}
+            />
           )}
         />
       </Animated.ScrollView>
+
+      {(Platform.OS === 'android' || Platform.OS === 'ios') && (<MediaViewer
+        visible={isMediaActive}
+        photos={photosFullScreen || []}
+        initialPage={targetPhotoIndex}
+        hide={() => {
+          setIsMediaActive(false);
+          setStatusBarHidden(false);
+        }}
+      />)}
     </ThemedView>
   )
 }

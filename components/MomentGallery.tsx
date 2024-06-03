@@ -1,12 +1,15 @@
 import * as React from 'react';
-import { FlatList, Image, View, StyleSheet } from 'react-native';
+import { Image, View, Pressable, StyleSheet } from 'react-native';
 import type { LayoutChangeEvent } from 'react-native';
 
 import type { Moment } from '@/typings/Moment';
 
 const GAP = 5;
 
-export default function({ photos }: { photos: Moment['photos'] }) {
+export default function({ photos, onImagePress }: {
+  photos: Moment['photos'],
+  onImagePress: (i: number) => void
+}) {
   const [aspectRatio, setAspectRatio] = React.useState<number>(1);
   const [size, setSize] = React.useState<number>();
   const getThumbnailSize = React.useCallback((e: LayoutChangeEvent) => {
@@ -28,31 +31,29 @@ export default function({ photos }: { photos: Moment['photos'] }) {
 
   if (!photos?.length) return;
   return photos.length === 1 ? (
-    <Image
-      source={{ uri: photos[0].thumbnail }}
-      style={[
-        styles.photo,
-        {
-          width: aspectRatio >= 1 ? size : undefined,
-          height: aspectRatio >= 1 ? undefined : size,
-          aspectRatio,
-        }
-      ]}
-    />
+    <Pressable onPress={() => onImagePress(0)}>
+      <Image
+        source={{ uri: photos[0].thumbnail }}
+        style={[
+          styles.photo,
+          {
+            width: aspectRatio >= 1 ? size : undefined,
+            height: aspectRatio >= 1 ? undefined : size,
+            aspectRatio,
+          }
+        ]}
+      />
+    </Pressable>
   ) : (
     <View
-      style={{ width: photos.length === 4 ? '66%' : '100%' }}
+      style={[styles.photos, { width: photos.length === 4 ? '66%' : '100%' }]}
       onLayout={getThumbnailSize}
     >
-      <FlatList
-        data={photos}
-        numColumns={photos?.length === 4 ? 2 : 3}
-        renderItem={({ item }) => (
-          <Image source={{ uri: item.thumbnail }} style={{ width: size, height: size }} />
-        )}
-        columnWrapperStyle={{ gap: GAP, marginBottom: GAP }}
-        style={{ marginBottom: -GAP }}
-      />
+      {photos.map((photo, index) => (
+        <Pressable key={photo.id} onPress={() => onImagePress(index)}>
+          <Image source={{ uri: photo.thumbnail }} style={{ width: size, height: size }} />
+        </Pressable>
+      ))}
     </View>
   )
 }
@@ -62,4 +63,10 @@ const styles = StyleSheet.create({
     maxWidth: '66%',
     maxHeight: 240,
   },
+  photos: {
+    flex: 1,
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: GAP,
+  }
 });

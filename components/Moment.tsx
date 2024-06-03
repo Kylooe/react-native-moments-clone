@@ -15,7 +15,8 @@ export default function({
   content,
   photos = [],
   createdAt,
-}: Moment) {
+  onImagePress,
+}: Moment & { onImagePress: (i: number) => void }) {
   const colorScheme = useColorScheme() ?? 'light';
   return (
     <View style={styles.container}>
@@ -25,7 +26,7 @@ export default function({
           <Text style={styles.name}>{user.name}</Text>
           {content && (<Text style={{ color: TEXT_COLOR[colorScheme] }}>{'\n'}{content}</Text>)}
         </Text>
-        <Gallery photos={photos} />
+        <Gallery photos={photos} onImagePress={onImagePress} />
         <View style={styles.commentWrapper}>
           <Text style={styles.time}>{formatDistanceToNowStrict(createdAt)} ago</Text>
           <Action />

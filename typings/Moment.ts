@@ -1,3 +1,10 @@
+export type Photo = {
+  id: string;
+  thumbnail: string;
+  src: string;
+  aspectRatio?: number;
+}
+
 export type Moment = {
   user: {
     name: string;
@@ -5,10 +12,6 @@ export type Moment = {
     avatar: string;
   },
   content?: string;
-  photos?: {
-    id: string;
-    thumbnail: string;
-    src: string;
-  }[];
+  photos?: Photo[];
   createdAt: string;
 };
