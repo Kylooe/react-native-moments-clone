@@ -16,8 +16,6 @@ import MomentCreator from '@/components/MomentCreator';
 import { default as MomentItem } from '@/components/Moment';
 import MediaViewer from '@/components/MediaViewer';
 
-import { useThemeColor } from '@/hooks/useThemeColor';
-
 import type { Moment } from '@/typings/Moment';
 
 import { list as data } from '@/constants/Moments';
@@ -26,6 +24,7 @@ const BANNER_HEIGHT = 270;
 const AVATAR_HEIGHT = 70;
 const AVATAR_OFFSET = 20;
 const HEADER_HEIGHT = 48;
+const HEADER_BG = { light: '#ededed', dark: '#000' };
 
 const bannerImage = require('@/assets/images/partial-react-logo.png');
 const avatar = require('@/assets/images/react-logo.png');
@@ -39,7 +38,7 @@ export default function Moments() {
   const scrollOffset = useScrollViewOffset(scrollRef);
 
   const animatedHeaderStyle = useAnimatedStyle(() => {
-    const bgColor = scrollOffset.value > SCROLL_THRESHOLD ? useThemeColor({}, 'header') : 'transparent';
+    const bgColor = scrollOffset.value > SCROLL_THRESHOLD ? HEADER_BG[colorScheme] : 'transparent';
     const iconOpacity = interpolate(
       scrollOffset.value,
       [BANNER_HEIGHT + AVATAR_OFFSET - AVATAR_HEIGHT - HEADER_HEIGHT - STATUSBAR_HEIGHT, SCROLL_THRESHOLD, BANNER_HEIGHT + AVATAR_OFFSET - HEADER_HEIGHT - STATUSBAR_HEIGHT],
