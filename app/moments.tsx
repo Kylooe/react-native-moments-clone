@@ -12,8 +12,11 @@ import { setStatusBarHidden } from 'expo-status-bar';
 import Icon from '@expo/vector-icons/FontAwesome6';
 
 import { ThemedView } from '@/components/ThemedView';
+import MomentCreator from '@/components/MomentCreator';
 import { default as MomentItem } from '@/components/Moment';
 import MediaViewer from '@/components/MediaViewer';
+
+import { useThemeColor } from '@/hooks/useThemeColor';
 
 import type { Moment } from '@/typings/Moment';
 
@@ -23,7 +26,6 @@ const BANNER_HEIGHT = 270;
 const AVATAR_HEIGHT = 70;
 const AVATAR_OFFSET = 20;
 const HEADER_HEIGHT = 48;
-const HEADER_BG = { light: '#ededed', dark: '#000' };
 
 const bannerImage = require('@/assets/images/partial-react-logo.png');
 const avatar = require('@/assets/images/react-logo.png');
@@ -37,7 +39,7 @@ export default function Moments() {
   const scrollOffset = useScrollViewOffset(scrollRef);
 
   const animatedHeaderStyle = useAnimatedStyle(() => {
-    const bgColor = scrollOffset.value > SCROLL_THRESHOLD ? HEADER_BG[colorScheme] : 'transparent';
+    const bgColor = scrollOffset.value > SCROLL_THRESHOLD ? useThemeColor({}, 'header') : 'transparent';
     const iconOpacity = interpolate(
       scrollOffset.value,
       [BANNER_HEIGHT + AVATAR_OFFSET - AVATAR_HEIGHT - HEADER_HEIGHT - STATUSBAR_HEIGHT, SCROLL_THRESHOLD, BANNER_HEIGHT + AVATAR_OFFSET - HEADER_HEIGHT - STATUSBAR_HEIGHT],
@@ -64,9 +66,11 @@ export default function Moments() {
         <Animated.Text style={[styles.btn, animatedIconStyle]} onPress={() => router.back()}>
           <Icon name="chevron-left" size={20} />
         </Animated.Text>
-        <Animated.Text style={[styles.btn, colorScheme === 'light' ? animatedIconStyle : { color: '#fff' }]}>
-          <Icon name="camera" size={20} />
-        </Animated.Text>
+        <MomentCreator>
+          <Animated.Text style={[styles.btn, colorScheme === 'light' ? animatedIconStyle : { color: '#fff' }]}>
+            <Icon name="camera" size={20} />
+          </Animated.Text>
+        </MomentCreator>
       </Animated.View>
 
       <Animated.ScrollView ref={scrollRef} scrollEventThrottle={16} style={{ height: '100%', overflow: 'scroll' }}>
