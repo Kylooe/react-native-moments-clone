@@ -1,11 +1,12 @@
-import { Image, Text, View, StyleSheet } from 'react-native';
+import { Text, View, StyleSheet } from 'react-native';
 import { formatDistanceToNowStrict } from 'date-fns';
 
+import Avatar from '@/components/MomentAvatar';
 import Action from '@/components/MomentAction';
 import Gallery from '@/components/MomentGallery';
+
 import { useThemeColor } from '@/hooks/useThemeColor';
 import type { Moment } from '@/typings/Moment';
-import { AVATAR_SIZE } from '@/constants/Moments';
 
 export default function({
   user,
@@ -16,7 +17,7 @@ export default function({
 }: Moment & { onImagePress: (i: number) => void }) {
   return (
     <View style={[styles.container, { borderBottomColor: useThemeColor({}, 'divider') }]}>
-      <Image source={{ uri: user.avatar }} style={styles.avatar} />
+      <Avatar url={user.avatar} id={user.id} />
       <View style={styles.contentWrapper}>
         <Text>
           <Text style={styles.name}>{user.name}</Text>
@@ -42,11 +43,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 25,
     borderBottomColor: '#efefef',
     borderBottomWidth: 1,
-  },
-  avatar: {
-    width: AVATAR_SIZE,
-    height: AVATAR_SIZE,
-    borderRadius: 5,
   },
   contentWrapper: {
     flex: 1,
