@@ -1,14 +1,25 @@
 import type { Moment } from "@/typings/Moment"
 import { formatISO, sub } from "date-fns";
 
-export const AVATAR_SIZE = 40;
+export const AVATAR_SIZE = {
+  large: { size: 70, radius: 10 },
+  default: { size: 40, radius: 5 },
+  small: { size: 30, radius: 2 },
+};
 
 const randomPhotos = [
   'https://randompicturegenerator.com/img/cat-generator/g8c05547620a4cada5c84f16d2d937b4943936cb13dc0a477c415ed5a25b5ff4bd89bebaa39e463cd9ea2c2a1dd74a201_640.jpg',
   'https://randompicturegenerator.com/img/cat-generator/g26e58f1c43e31a45012ee73ca9f89c9de79374af892c5cd926ec8d9280305d44490283cfd869172c8f8ea322827287f3_640.jpg',
   'https://randompicturegenerator.com/img/cat-generator/g442aacb7b23e5f83b893bcc0fe86ad125b2426c94ad4ef4f411082593318b19ff9a8f6fae4e524b2dbe7f1b3bb26053b_640.jpg',
   'https://randompicturegenerator.com/img/cat-generator/gffac7d89a6766193920012ecea55e5faf3d8494670322109af3ec828743b7462bd13326ea1d2f24cc64e871021abab1b_640.jpg',
-]
+];
+
+export const myProfile = {
+  id: 'my_wechat_id',
+  name: '用户名',
+  avatar: randomPhotos[0],
+  banner: randomPhotos[1],
+};
 
 export const list: Moment[] = new Array(10).fill(null).map((_, i) => (
   {

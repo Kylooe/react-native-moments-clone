@@ -1,3 +1,5 @@
+import type { User } from './User';
+
 export type Photo = {
   id: string;
   thumbnail: string;
@@ -6,11 +8,7 @@ export type Photo = {
 }
 
 export type Moment = {
-  user: {
-    name: string;
-    id: string;
-    avatar: string;
-  },
+  user: User,
   content?: string;
   photos?: Photo[];
   createdAt: string;
